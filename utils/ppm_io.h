@@ -1,3 +1,6 @@
+#ifndef _UTILS_H_
+#define _UTILS_H_
+
 #include <string>
 
 // -----------------------------------------------------------------------------
@@ -12,3 +15,5 @@ bool WritePPM( const std::string& file,
                unsigned int h,
                const uint8_t* image );
 }
+
+#endif // _UTILS_H_
