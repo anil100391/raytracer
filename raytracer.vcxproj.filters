@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{76ee7d2e-9a1d-43db-a7a9-1d0a80f60786}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{3697a38c-c038-44ed-9b77-0bf2ea82049a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ppmio.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sphere.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\interval.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\material.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\rtDefs.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ppmio.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vec3.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\color.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ray.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hittable.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sphere.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hittableList.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\interval.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\camera.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\material.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
