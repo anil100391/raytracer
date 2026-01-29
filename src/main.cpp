@@ -111,7 +111,7 @@ int main( int argc, const char *argv[] )
 
     Camera camera;
     camera.aspectRatio     = 16.0 / 9.0;
-    camera.imageWidth      = 800u;
+    camera.imageWidth      = 400u;
     camera.samplesPerPixel = 100u;
     camera.maxDepth        = 50u;
 

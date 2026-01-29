@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.26)
 
-project(raytracer)
+project(raytracer LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
 
-add_executable(raytracer main.cpp "utils/ppm_io.cpp" "vec3.h" "ray.h")
+add_executable(raytracer
+        "src/camera.cpp"
+        "src/interval.cpp"
+        "src/main.cpp"
+        "src/material.cpp"
+        "src/ppmio.cpp"
+        "src/sphere.cpp" )
+
+target_include_directories(raytracer PRIVATE include)
+
