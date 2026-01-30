@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include <Ray.h>
+#include <ray.h>
 #include <interval.h>
 
 // -----------------------------------------------------------------------------

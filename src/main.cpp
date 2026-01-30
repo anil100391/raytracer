@@ -3,12 +3,12 @@
 
 #include <ppmio.h>
 #include <vec3.h>
-#include <Ray.h>
+#include <ray.h>
 #include <color.h>
 #include <camera.h>
-#include <Sphere.h>
+#include <sphere.h>
 #include <rtDefs.h>
-#include <Material.h>
+#include <material.h>
 #include <hittableList.h>
 
 // -----------------------------------------------------------------------------

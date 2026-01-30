@@ -78,12 +78,12 @@ public:
         return (std::fabs( e[0] ) < s) && (std::fabs( e[1] ) < s) && (std::fabs( e[2] ) < s);
     }
 
-    static [[nodiscard]] Vec3 Random()
+    [[nodiscard]] static Vec3 Random()
     {
         return Vec3( RandomDouble(), RandomDouble(), RandomDouble() );
     }
 
-    static [[nodiscard]] Vec3 Random( double min, double max )
+    [[nodiscard]] static Vec3 Random( double min, double max )
     {
         return Vec3( RandomDouble( min, max ),
                      RandomDouble( min, max ),
