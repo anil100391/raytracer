@@ -13,7 +13,7 @@
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-#define RENDER_BOOK_COVER 0
+#define RENDER_BOOK_COVER 1
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -40,7 +40,8 @@ static void BookCoverImage()
                     // diffuse
                     auto albedo = Color::Random() * Color::Random();
                     sphereMaterial = std::make_shared<Lambertian>( albedo );
-                    world.Add( std::make_shared<Sphere>( center, 0.2, sphereMaterial ) );
+                    auto center2   = center + Vec3( 0.0, RandomDouble( 0.0, 0.5 ), 0.0 );
+                    world.Add( std::make_shared<Sphere>( center, center2, 0.2, sphereMaterial ) );
                 }
                 else if ( chooseMat < 0.95 )
                 {
@@ -72,8 +73,8 @@ static void BookCoverImage()
     Camera camera;
 
     camera.aspectRatio     = 16.0 / 9.0;
-    camera.imageWidth      = 1200u;
-    camera.samplesPerPixel = 500u;
+    camera.imageWidth      = 400;
+    camera.samplesPerPixel = 100u;
     camera.maxDepth        = 50u;
 
     camera.vfov            = 20;

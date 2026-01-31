@@ -100,9 +100,10 @@ Ray Camera::GetRay( unsigned int col, unsigned int row ) const noexcept
     auto offset = SampleSquare();
     auto pixelSample = pixel00Loc + ((col + offset.x()) * pixelDeltaU)
                                   + ((row + offset.y()) * pixelDeltaV);
-    auto RayOrigin    = (defocusAngle <= 0) ? center : DefocusDiskSample();
-    auto RayDirection = pixelSample - RayOrigin;
-    return Ray( RayOrigin, RayDirection );
+    auto rayOrigin    = (defocusAngle <= 0) ? center : DefocusDiskSample();
+    auto rayDirection = pixelSample - rayOrigin;
+    auto rayTime      = RandomDouble();
+    return Ray( rayOrigin, rayDirection, rayTime );
 }
 
 // -----------------------------------------------------------------------------
