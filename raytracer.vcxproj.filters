@@ -27,6 +27,12 @@
     <ClCompile Include="src\material.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\aabb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bvh.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rtDefs.h">
@@ -60,6 +66,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\material.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\aabb.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bvh.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

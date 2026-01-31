@@ -1,3 +1,4 @@
+#include <ctime>
 #include <camera.h>
 #include <material.h>
 
@@ -5,6 +6,8 @@
 // -----------------------------------------------------------------------------
 void Camera::Render( const Hittable &world, std::vector<uint8_t> &image )
 {
+    auto begin = clock();
+
     Initialize();
 
     image.clear();
@@ -37,6 +40,8 @@ void Camera::Render( const Hittable &world, std::vector<uint8_t> &image )
             image.push_back( ib );
         }
     }
+
+    std::cout << "Rendered in " << (1.0 * (clock() - begin)) / CLOCKS_PER_SEC << "s\n";
 }
 
 // -----------------------------------------------------------------------------

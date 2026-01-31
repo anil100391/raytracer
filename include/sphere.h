@@ -13,23 +13,17 @@ public:
     // Stationary sphere
     Sphere( const Point3 &center,
             double radius,
-            const std::shared_ptr<Material> &mat )
-        : _center( center, Vec3( 0, 0, 0 ) ),
-          _radius( radius ),
-          _mat( mat )
-    {}
+            const std::shared_ptr<Material> &mat );
 
     // Moving sphere
     Sphere( const Point3 &start,
             const Point3 &end,
             double radius,
-            const std::shared_ptr<Material> &mat )
-        : _center( start, end - start ),
-          _radius( radius ),
-          _mat( mat )
-    {}
+            const std::shared_ptr<Material> &mat );
 
     virtual bool Hit( const Ray &r, const Interval &RayT, HitRecord &rec ) const override;
+
+    virtual AABB BoundingBox() const override;
 
 private:
 
@@ -38,4 +32,5 @@ private:
     Ray                       _center;
     double                    _radius = 1.0;
     std::shared_ptr<Material> _mat;
+    AABB                      _bbox;
 };

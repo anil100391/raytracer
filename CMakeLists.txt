@@ -9,6 +9,8 @@ add_executable(raytracer
         "src/main.cpp"
         "src/material.cpp"
         "src/ppmio.cpp"
+        "src/aabb.cpp"
+        "src/bvh.cpp"
         "src/sphere.cpp" )
 
 target_include_directories(raytracer PRIVATE include)

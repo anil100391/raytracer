@@ -2,8 +2,7 @@
 
 #include <memory>
 
-#include <ray.h>
-#include <interval.h>
+#include <aabb.h>
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -37,4 +36,6 @@ public:
     virtual ~Hittable() = default;
 
     virtual bool Hit( const Ray &r, const Interval &RayT, HitRecord &rec ) const = 0;
+
+    virtual AABB BoundingBox() const = 0;
 };

@@ -135,6 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\aabb.h" />
+    <ClInclude Include="include\bvh.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\color.h" />
     <ClInclude Include="include\hittable.h" />
@@ -148,6 +150,8 @@
     <ClInclude Include="include\ppmio.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\aabb.cpp" />
+    <ClCompile Include="src\bvh.cpp" />
     <ClCompile Include="src\ppmio.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\interval.cpp" />
