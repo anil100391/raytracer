@@ -51,7 +51,13 @@ BVHNode::BVHNode( std::vector<std::shared_ptr<Hittable>> &objects,
                   size_t start,
                   size_t end )
 {
-    int axis = RandomInt( 0, 2 );
+    bbox = AABB::Empty;
+    for ( auto ii = start; ii < end; ++ii )
+    {
+        bbox = AABB( bbox, objects[ii]->BoundingBox() );
+    }
+
+    int axis = bbox.LongestAxis();
 
     auto comparator = (axis == 0) ? BoxXCompare
                                   : (axis == 1) ? BoxYCompare

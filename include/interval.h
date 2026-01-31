@@ -46,6 +46,6 @@ public:
         return Interval( min - padding, max + padding );
     }
 
-    static const Interval empty;
-    static const Interval universe;
+    static const Interval Empty;
+    static const Interval Universe;
 };

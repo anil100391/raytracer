@@ -42,5 +42,15 @@ public:
 
     bool Hit( const Ray &r, Interval rayT ) const;
 
+    [[nodiscard]] int LongestAxis() const noexcept
+    {
+        if ( x.Size() > y.Size() )
+            return x.Size() > z.Size() ? 0 : 2;
+        else
+            return y.Size() > z.Size() ? 1 : 2;
+    }
+
+    static const AABB Empty, Universe;
+
 private:
 };
