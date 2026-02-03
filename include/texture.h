@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <color.h>
+#include <perlin.h>
 #include <rtSTBImage.h>
 
 // -----------------------------------------------------------------------------
@@ -79,3 +80,18 @@ private:
     rtImage _image;
 };
 
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+class NoiseTexture : public Texture
+{
+public:
+
+    NoiseTexture( double scale ) : _scale( scale ) {}
+
+    virtual Color Value( double u, double v, const Point3 &p ) const override;
+
+private:
+
+    Perlin _noise;
+    double _scale = 1.0;
+};

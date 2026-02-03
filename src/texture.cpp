@@ -44,3 +44,10 @@ Color ImageTexture::Value( double u, double v, const Point3 &p ) const
     auto colorScale = 1.0 / 255.0;
     return Color( colorScale * pixel[0], colorScale * pixel[1], colorScale * pixel[2] );
 }
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+Color NoiseTexture::Value( double u, double v, const Point3 &p ) const
+{
+    return Color( 0.5, 0.5, 0.5 ) * (1 + std::sin( _scale * p.z() + 10 * _noise.Turbulence( p, 7 ) ));
+}

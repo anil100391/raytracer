@@ -14,6 +14,7 @@ add_executable(raytracer
         "src/sphere.cpp"
         "src/texture.cpp"
         "src/rtSTBImage.cpp"
+        "src/perlin.cpp"
 )
 
 target_include_directories(raytracer PRIVATE include third_party)

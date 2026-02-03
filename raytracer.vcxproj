@@ -143,6 +143,7 @@
     <ClInclude Include="include\hittableList.h" />
     <ClInclude Include="include\interval.h" />
     <ClInclude Include="include\material.h" />
+    <ClInclude Include="include\perlin.h" />
     <ClInclude Include="include\ray.h" />
     <ClInclude Include="include\rtDefs.h" />
     <ClInclude Include="include\rtSTBImage.h" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="src\aabb.cpp" />
     <ClCompile Include="src\bvh.cpp" />
+    <ClCompile Include="src\perlin.cpp" />
     <ClCompile Include="src\ppmio.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\interval.cpp" />

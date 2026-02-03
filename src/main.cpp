@@ -161,9 +161,37 @@ static void Earth()
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static void PerlinSpheres()
+{
+    HittableList world;
+
+    auto perText = std::make_shared<NoiseTexture>( 4 );
+    world.Add( std::make_shared<Sphere>( Point3( 0, -1000, 0 ), 1000, std::make_shared<Lambertian>( perText ) ) );
+    world.Add( std::make_shared<Sphere>( Point3( 0, 2, 0 ), 2, std::make_shared<Lambertian>( perText ) ) );
+
+    Camera camera;
+    camera.aspectRatio     = 16.0 / 9.0;
+    camera.imageWidth      = 400u;
+    camera.samplesPerPixel = 100u;
+    camera.maxDepth        = 50u;
+
+    camera.vfov            = 20.0;
+    camera.lookFrom        = Point3( 13, 2, 3 );
+    camera.lookAt          = Point3( 0, 0, 0 );
+    camera.vup             = Vec3( 0, 1, 0 );
+
+    camera.defocusAngle    = 0.0;
+
+    std::vector<uint8_t> image;
+    camera.Render( HittableList( world ), image );
+    rtPPMio::WritePPM( "perlin.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 int main( int argc, const char *argv[] )
 {
-    switch ( 1 )
+    switch ( 10 )
     {
         case 0:
             MaterialTest();
@@ -173,6 +201,10 @@ int main( int argc, const char *argv[] )
             break;
         case 3:
             Earth();
+            break;
+        case 10:
+            PerlinSpheres();
+            break;
         default:
             break;
     }
