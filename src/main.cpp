@@ -9,16 +9,13 @@
 #include <camera.h>
 #include <sphere.h>
 #include <rtDefs.h>
+#include <texture.h>
 #include <material.h>
 #include <hittableList.h>
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-#define RENDER_BOOK_COVER 1
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-static void BookCoverImage()
+static void BookCoverImage( bool renderBouncingSpheres )
 {
     HittableList world;
 
@@ -41,8 +38,15 @@ static void BookCoverImage()
                     // diffuse
                     auto albedo = Color::Random() * Color::Random();
                     sphereMaterial = std::make_shared<Lambertian>( albedo );
-                    auto center2   = center + Vec3( 0.0, RandomDouble( 0.0, 0.5 ), 0.0 );
-                    world.Add( std::make_shared<Sphere>( center, center2, 0.2, sphereMaterial ) );
+                    if ( renderBouncingSpheres )
+                    {
+                        auto center2 = center + Vec3( 0.0, RandomDouble( 0.0, 0.5 ), 0.0 );
+                        world.Add( std::make_shared<Sphere>( center, center2, 0.2, sphereMaterial ) );
+                    }
+                    else
+                    {
+                        world.Add( std::make_shared<Sphere>( center, 0.2, sphereMaterial ) );
+                    }
                 }
                 else if ( chooseMat < 0.95 )
                 {
@@ -76,7 +80,7 @@ static void BookCoverImage()
     Camera camera;
 
     camera.aspectRatio     = 16.0 / 9.0;
-    camera.imageWidth      = 400;
+    camera.imageWidth      = 1200;
     camera.samplesPerPixel = 100u;
     camera.maxDepth        = 50u;
 
@@ -95,11 +99,8 @@ static void BookCoverImage()
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-int main( int argc, const char *argv[] )
+static void MaterialTest()
 {
-#if RENDER_BOOK_COVER
-    BookCoverImage();
-#else
     auto MaterialGround = std::make_shared<Lambertian>( Color( 0.8, 0.8, 0.0 ) );
     auto MaterialCenter = std::make_shared<Lambertian>( Color( 0.1, 0.2, 0.5 ) );
     auto MaterialLeft   = std::make_shared<Dielectric>( 1.50 );
@@ -130,7 +131,51 @@ int main( int argc, const char *argv[] )
     std::vector<uint8_t> image;
     camera.Render(world, image);
     rtPPMio::WritePPM( "test.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
-#endif // RENDER_BOOK_COVER
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static void Earth()
+{
+    auto earthTexture = std::make_shared<ImageTexture>( "images/earthmap.jpg" );
+    auto earthSurface = std::make_shared<Lambertian>( earthTexture );
+    auto globe        = std::make_shared<Sphere>( Point3(), 2, earthSurface );
+
+    Camera camera;
+    camera.aspectRatio     = 16.0 / 9.0;
+    camera.imageWidth      = 400u;
+    camera.samplesPerPixel = 100u;
+    camera.maxDepth        = 50u;
+
+    camera.vfov            = 20.0;
+    camera.lookFrom        = Point3( 0, 0, 12 );
+    camera.lookAt          = Point3( 0, 0, 0 );
+    camera.vup             = Vec3( 0, 1, 0 );
+
+    camera.defocusAngle    = 0.0;
+
+    std::vector<uint8_t> image;
+    camera.Render( HittableList( globe ), image );
+    rtPPMio::WritePPM( "earth.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+int main( int argc, const char *argv[] )
+{
+    switch ( 1 )
+    {
+        case 0:
+            MaterialTest();
+            break;
+        case 1:
+            BookCoverImage( false );
+            break;
+        case 3:
+            Earth();
+        default:
+            break;
+    }
 
     return 0u;
 }

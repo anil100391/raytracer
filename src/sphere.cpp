@@ -58,6 +58,7 @@ bool Sphere::Hit(const Ray &r, const Interval &RayT, HitRecord &rec) const
     rec.p = r.at( rec.t );
     Vec3 outwardNormal = (rec.p - center) / _radius;
     rec.SetFaceNormal( r, outwardNormal );
+    GetSphereUV( outwardNormal, rec.u, rec.v );
     rec.mat = _mat;
 
     return true;
@@ -68,4 +69,15 @@ bool Sphere::Hit(const Ray &r, const Interval &RayT, HitRecord &rec) const
 AABB Sphere::BoundingBox() const
 {
     return _bbox;
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+void Sphere::GetSphereUV( const Point3 &p, double &u, double &v )
+{
+    auto theta = std::acos( -p.y() );
+    auto phi = std::atan2( -p.z(), p.x() ) + pi;
+
+    u = phi / (2 * pi);
+    v = theta / pi;
 }

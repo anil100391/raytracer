@@ -1,6 +1,8 @@
 #pragma once
 
-#include <color.h>
+#include <memory>
+
+#include <texture.h>
 #include <hittable.h>
 
 // -----------------------------------------------------------------------------
@@ -26,7 +28,8 @@ class Lambertian : public Material
 {
 public:
 
-    Lambertian( const Color &albedo ) : _albedo( albedo ) {}
+    Lambertian( const Color &albedo ) : _texture( std::make_shared<SolidColor>( albedo ) ) {}
+    Lambertian( const std::shared_ptr<Texture> &tex ) : _texture( tex ) {}
 
     virtual bool Scatter( const Ray &r,
                           const HitRecord &rec,
@@ -35,7 +38,7 @@ public:
 
 private:
 
-    Color _albedo;
+    std::shared_ptr<Texture> _texture;
 };
 
 // -----------------------------------------------------------------------------

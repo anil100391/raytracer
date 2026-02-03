@@ -7,6 +7,12 @@
     <Filter Include="src">
       <UniqueIdentifier>{3697a38c-c038-44ed-9b77-0bf2ea82049a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{dbbfd849-789f-469c-8a57-e852602e6063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\stb_image">
+      <UniqueIdentifier>{651e2e83-ac73-4627-ba7c-0f26a352b1cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -31,6 +37,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\bvh.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rtSTBImage.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,5 +86,19 @@
     <ClInclude Include="include\bvh.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\texture.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rtSTBImage.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\stb_image.h">
+      <Filter>third_party\stb_image</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="third_party\LICENSE.txt">
+      <Filter>third_party\stb_image</Filter>
+    </Text>
   </ItemGroup>
 </Project>

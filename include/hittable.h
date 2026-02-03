@@ -18,6 +18,8 @@ public:
     Vec3   normal;
     std::shared_ptr<Material> mat;
     double t = 0.0;
+    double u = 0.0;
+    double v = 0.0;
     bool frontFace = false;
 
     void SetFaceNormal( const Ray &r, const Vec3 &outwardNormal )

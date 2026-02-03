@@ -12,7 +12,7 @@ bool Lambertian::Scatter( const Ray &r,
         scatterDirection = rec.normal;
 
     scattered = Ray( rec.p, scatterDirection, r.time() );
-    attenuation = _albedo;
+    attenuation = _texture->Value( rec.u, rec.v, rec.p );
     return true;
 }
 

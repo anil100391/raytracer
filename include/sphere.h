@@ -27,6 +27,8 @@ public:
 
 private:
 
+    static void GetSphereUV( const Point3 &p, double &u, double &v );
+
     // sphere starts at _center.origin() at t = 0 and moves to _center.origin()
     // + _center.dir() at t = 1
     Ray                       _center;

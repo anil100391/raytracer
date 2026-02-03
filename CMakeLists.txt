@@ -11,7 +11,10 @@ add_executable(raytracer
         "src/ppmio.cpp"
         "src/aabb.cpp"
         "src/bvh.cpp"
-        "src/sphere.cpp" )
+        "src/sphere.cpp"
+        "src/texture.cpp"
+        "src/rtSTBImage.cpp"
+)
 
-target_include_directories(raytracer PRIVATE include)
+target_include_directories(raytracer PRIVATE include third_party)
 
