@@ -14,13 +14,16 @@ public:
 
     AABB( const Interval &xi, const Interval &yi, const Interval &zi )
         : x( xi ), y( yi ), z( zi )
-    {}
+    {
+        PadToMinimums();
+    }
 
     AABB( const Point3 &a, const Point3 &b )
     {
         x = (a[0] <= b[0]) ? Interval( a[0], b[0] ) : Interval( b[0], a[0] );
         y = (a[1] <= b[1]) ? Interval( a[1], b[1] ) : Interval( b[1], a[1] );
         z = (a[2] <= b[2]) ? Interval( a[2], b[2] ) : Interval( b[2], a[2] );
+        PadToMinimums();
     }
 
     AABB( const AABB &box0, const AABB &box1 )
@@ -53,4 +56,23 @@ public:
     static const AABB Empty, Universe;
 
 private:
+
+    void PadToMinimums()
+    {
+        double delta = 0.0001;
+        if ( x.Size() < delta )
+        {
+            x = x.Expand( delta );
+        }
+
+        if ( y.Size() < delta )
+        {
+            y = y.Expand( delta );
+        }
+
+        if ( z.Size() < delta )
+        {
+            z = z.Expand( delta );
+        }
+    }
 };

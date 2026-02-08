@@ -48,6 +48,7 @@
     <ClCompile Include="src\perlin.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\quad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rtDefs.h">
@@ -99,6 +100,9 @@
       <Filter>third_party\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="include\perlin.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\quad.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

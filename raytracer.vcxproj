@@ -144,6 +144,7 @@
     <ClInclude Include="include\interval.h" />
     <ClInclude Include="include\material.h" />
     <ClInclude Include="include\perlin.h" />
+    <ClInclude Include="include\quad.h" />
     <ClInclude Include="include\ray.h" />
     <ClInclude Include="include\rtDefs.h" />
     <ClInclude Include="include\rtSTBImage.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="src\interval.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\material.cpp" />
+    <ClCompile Include="src\quad.cpp" />
     <ClCompile Include="src\rtSTBImage.cpp" />
     <ClCompile Include="src\sphere.cpp" />
     <ClCompile Include="src\texture.cpp" />

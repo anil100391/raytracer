@@ -5,6 +5,7 @@
 #include <vec3.h>
 #include <ray.h>
 #include <bvh.h>
+#include <quad.h>
 #include <color.h>
 #include <camera.h>
 #include <sphere.h>
@@ -80,7 +81,7 @@ static void BookCoverImage( bool renderBouncingSpheres )
     Camera camera;
 
     camera.aspectRatio     = 16.0 / 9.0;
-    camera.imageWidth      = 1200;
+    camera.imageWidth      = 1920 * 2;
     camera.samplesPerPixel = 100u;
     camera.maxDepth        = 50u;
 
@@ -189,21 +190,63 @@ static void PerlinSpheres()
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static void Quads()
+{
+    HittableList world;
+
+    // Materials
+    auto leftRed     = std::make_shared<Lambertian>( Color( 1.0, 0.2, 0.2 ) );
+    auto backGreen   = std::make_shared<Lambertian>( Color( 0.2, 1.0, 0.2 ) );
+    auto rightBlue   = std::make_shared<Lambertian>( Color( 0.2, 0.2, 1.0 ) );
+    auto upperOrange = std::make_shared<Lambertian>( Color( 1.0, 0.5, 0.0 ) );
+    auto lowerTeal   = std::make_shared<Lambertian>( Color( 0.2, 0.8, 0.8 ) );
+
+    // Quads
+    world.Add( std::make_shared<Quad>( Point3( -3, -2, 5 ), Vec3( 0, 0, -4 ), Vec3( 0, 4, 0 ), leftRed ) );
+    world.Add( std::make_shared<Quad>( Point3( -2, -2, 0 ), Vec3( 4, 0, 0 ), Vec3( 0, 4, 0 ), backGreen ) );
+    world.Add( std::make_shared<Quad>( Point3( 3, -2, 1 ), Vec3( 0, 0, 4 ), Vec3( 0, 4, 0 ), rightBlue ) );
+    world.Add( std::make_shared<Quad>( Point3( -2, 3, 1 ), Vec3( 4, 0, 0 ), Vec3( 0, 0, 4 ), upperOrange ) );
+    world.Add( std::make_shared<Quad>( Point3( -2, -3, 5 ), Vec3( 4, 0, 0 ), Vec3( 0, 0, -4 ), lowerTeal ) );
+
+    Camera camera;
+
+    camera.aspectRatio = 1.0;
+    camera.imageWidth = 400;
+    camera.samplesPerPixel = 100;
+    camera.maxDepth = 50;
+
+    camera.vfov = 80;
+    camera.lookFrom = Point3( 0, 0, 9 );
+    camera.lookAt = Point3( 0, 0, 0 );
+    camera.vup = Vec3( 0, 1, 0 );
+
+    camera.defocusAngle = 0;
+
+    std::vector<uint8_t> image;
+    camera.Render( HittableList( world ), image );
+    rtPPMio::WritePPM( "quads.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 int main( int argc, const char *argv[] )
 {
-    switch ( 10 )
+    switch ( 11 )
     {
         case 0:
             MaterialTest();
             break;
         case 1:
-            BookCoverImage( false );
+            BookCoverImage( true );
             break;
         case 3:
             Earth();
             break;
         case 10:
             PerlinSpheres();
+            break;
+        case 11:
+            Quads();
             break;
         default:
             break;

@@ -1,4 +1,5 @@
 #include <ctime>
+#include <format>
 #include <camera.h>
 #include <material.h>
 
@@ -41,7 +42,7 @@ void Camera::Render( const Hittable &world, std::vector<uint8_t> &image )
         }
     }
 
-    std::cout << "Rendered in " << (1.0 * (clock() - begin)) / CLOCKS_PER_SEC << "s\n";
+    std::cout << std::format( "Rendered in {}s\n", (1.0 * (clock() - begin)) / CLOCKS_PER_SEC );
 }
 
 // -----------------------------------------------------------------------------
