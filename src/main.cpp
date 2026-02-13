@@ -269,9 +269,47 @@ static void SimpleLight()
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static void CornellBox()
+{
+    HittableList world;
+
+    auto red   = std::make_shared<Lambertian>( Color( 0.65, 0.05, 0.05 ) );
+    auto white = std::make_shared<Lambertian>( Color( 0.73, 0.73, 0.73 ) );
+    auto green = std::make_shared<Lambertian>( Color( 0.12, 0.45, 0.15 ) );
+    auto light = std::make_shared<DiffuseLight>( Color( 15, 15, 15 ) );
+
+    world.Add( std::make_shared<Quad>( Point3( 555, 0, 0 ), Vec3( 0, 555, 0 ), Vec3( 0, 0, 555 ), green ) );
+    world.Add( std::make_shared<Quad>( Point3( 0, 0, 0 ), Vec3( 0, 555, 0 ), Vec3( 0, 0, 555 ), red ) );
+    world.Add( std::make_shared<Quad>( Point3( 343, 554, 332 ), Vec3( -130, 0, 0 ), Vec3( 0, 0, -105 ), light ) );
+    world.Add( std::make_shared<Quad>( Point3( 0, 0, 0 ), Vec3( 555, 0, 0 ), Vec3( 0, 0, 555 ), white ) );
+    world.Add( std::make_shared<Quad>( Point3( 555, 555, 555 ), Vec3( -555, 0, 0 ), Vec3( 0, 0, -555 ), white ) );
+    world.Add( std::make_shared<Quad>( Point3( 0, 0, 555 ), Vec3( 555, 0, 0 ), Vec3( 0, 555, 0 ), white ) );
+
+    Camera camera;
+
+    camera.aspectRatio     = 1.0;
+    camera.imageWidth      = 600;
+    camera.samplesPerPixel = 200;
+    camera.maxDepth        = 50;
+    camera.backGround      = Color( 0, 0, 0 );
+
+    camera.vfov     = 40;
+    camera.lookFrom = Point3( 278, 278, -800 );
+    camera.lookAt   = Point3( 278, 278, 0 );
+    camera.vup = Vec3( 0, 1, 0 );
+
+    camera.defocusAngle = 0;
+
+    std::vector<uint8_t> image;
+    camera.Render( HittableList( world ), image );
+    rtPPMio::WritePPM( "EmptyCornellBox.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 int main( int argc, const char *argv[] )
 {
-    switch ( 12 )
+    switch ( 13 )
     {
         case 0:
             MaterialTest();
@@ -290,6 +328,9 @@ int main( int argc, const char *argv[] )
             break;
         case 12:
             SimpleLight();
+            break;
+        case 13:
+            CornellBox();
             break;
         default:
             break;
