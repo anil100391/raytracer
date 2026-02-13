@@ -20,6 +20,11 @@ public:
     {
         return false;
     }
+
+    virtual Color Emitted( double u, double v, const Point3 &p ) const
+    {
+        return Color( 0, 0, 0 );
+    }
 };
 
 // -----------------------------------------------------------------------------
@@ -83,5 +88,30 @@ private:
     double  _refractionIndex = 1.0;
 
     static double reflectance( double cosine, double refractionIndex );
+};
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+class DiffuseLight : public Material
+{
+public:
+
+    DiffuseLight( std::shared_ptr<Texture> tex )
+        : _tex( tex )
+    {}
+
+    DiffuseLight( const Color &emit )
+        : _tex( std::make_shared<SolidColor>( emit ) )
+    {}
+
+    Color Emitted( double u, double v, const Point3 &p ) const override;
+
+    virtual bool Scatter( const Ray &r,
+                          const HitRecord &rec,
+                          Color &attenuation,
+                          Ray &scattered ) const override;
+private:
+
+    std::shared_ptr<Texture> _tex;
 };
 

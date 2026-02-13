@@ -84,6 +84,7 @@ static void BookCoverImage( bool renderBouncingSpheres )
     camera.imageWidth      = 1920 * 2;
     camera.samplesPerPixel = 100u;
     camera.maxDepth        = 50u;
+    camera.backGround      = Color( 0.70, 0.80, 1.00 );
 
     camera.vfov            = 20;
     camera.lookFrom        = Point3( 13, 2, 3 );
@@ -120,6 +121,7 @@ static void MaterialTest()
     camera.imageWidth      = 400u;
     camera.samplesPerPixel = 100u;
     camera.maxDepth        = 50u;
+    camera.backGround      = Color( 0.70, 0.80, 1.00 );
 
     camera.vfov            = 20.0;
     camera.lookFrom        = Point3(-2, 2, 1);
@@ -147,6 +149,7 @@ static void Earth()
     camera.imageWidth      = 400u;
     camera.samplesPerPixel = 100u;
     camera.maxDepth        = 50u;
+    camera.backGround      = Color( 0.70, 0.80, 1.00 );
 
     camera.vfov            = 20.0;
     camera.lookFrom        = Point3( 0, 0, 12 );
@@ -175,6 +178,7 @@ static void PerlinSpheres()
     camera.imageWidth      = 400u;
     camera.samplesPerPixel = 100u;
     camera.maxDepth        = 50u;
+    camera.backGround      = Color( 0.70, 0.80, 1.00 );
 
     camera.vfov            = 20.0;
     camera.lookFrom        = Point3( 13, 2, 3 );
@@ -214,6 +218,7 @@ static void Quads()
     camera.imageWidth = 400;
     camera.samplesPerPixel = 100;
     camera.maxDepth = 50;
+    camera.backGround      = Color( 0.70, 0.80, 1.00 );
 
     camera.vfov = 80;
     camera.lookFrom = Point3( 0, 0, 9 );
@@ -229,9 +234,44 @@ static void Quads()
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static void SimpleLight()
+{
+    HittableList world;
+
+    // Materials
+    auto pertext = std::make_shared<NoiseTexture>( 4 );
+    world.Add( std::make_shared<Sphere>( Point3( 0, -1000, 0 ), 1000, std::make_shared<Lambertian>( pertext ) ) );
+    world.Add( std::make_shared<Sphere>( Point3( 0, 2, 0 ), 2, std::make_shared<Lambertian>( pertext ) ) );
+
+    auto diffLight = std::make_shared<DiffuseLight>( Color( 4, 4, 4 ) );
+    world.Add( std::make_shared<Sphere>( Point3( 0, 7, 0 ), 2, diffLight ) );
+    world.Add( std::make_shared<Quad>( Point3( 3, 1, -2 ), Vec3( 2, 0, 0 ), Vec3( 0, 2, 0 ), diffLight ) );
+
+    Camera camera;
+
+    camera.aspectRatio     = 16.0 / 9.0;
+    camera.imageWidth      = 400;
+    camera.samplesPerPixel = 100;
+    camera.maxDepth        = 50;
+    camera.backGround      = Color( 0, 0, 0 );
+
+    camera.vfov = 20;
+    camera.lookFrom = Point3( 26, 3, 6 );
+    camera.lookAt = Point3( 0, 2, 0 );
+    camera.vup = Vec3( 0, 1, 0 );
+
+    camera.defocusAngle = 0;
+
+    std::vector<uint8_t> image;
+    camera.Render( HittableList( world ), image );
+    rtPPMio::WritePPM( "light.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 int main( int argc, const char *argv[] )
 {
-    switch ( 11 )
+    switch ( 12 )
     {
         case 0:
             MaterialTest();
@@ -247,6 +287,9 @@ int main( int argc, const char *argv[] )
             break;
         case 11:
             Quads();
+            break;
+        case 12:
+            SimpleLight();
             break;
         default:
             break;

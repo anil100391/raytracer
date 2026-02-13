@@ -122,16 +122,18 @@ Color Camera::RayColor( const Ray &r,
         return Color( 0, 0, 0 );
 
     HitRecord rec;
-    if ( world.Hit( r, Interval( 0.001, infinity ), rec ) )
+    if ( !world.Hit( r, Interval( 0.001, infinity ), rec ) )
     {
-        Ray scattered;
-        Color attenuation;
-        if ( rec.mat->Scatter( r, rec, attenuation, scattered ) )
-            return attenuation * RayColor( scattered, depth - 1, world );
-        return Color( 0, 0, 0 );
+        return backGround;
     }
 
-    Vec3 unitDirection = Normalize( r.direction() );
-    auto a = 0.5 * (unitDirection.y() + 1.0);
-    return (1 - a) * Color( 1, 1, 1 ) + a * Color( 0.5, 0.7, 1.0 );
+    Ray scattered;
+    Color attenuation;
+    Color colorFromEmission = rec.mat->Emitted( rec.u, rec.v, rec.p );
+
+    if ( !rec.mat->Scatter( r, rec, attenuation, scattered ) )
+        return colorFromEmission;
+
+    Color colorFromScatter = attenuation * RayColor( scattered, depth - 1, world );
+    return colorFromEmission + colorFromScatter;
 }

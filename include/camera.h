@@ -14,6 +14,7 @@ public:
     unsigned int imageWidth      = 100u;
     unsigned int samplesPerPixel = 10u;
     unsigned int maxDepth        = 10u;
+    Color        backGround;
 
     double       vfov            = 90; // Vertical view angle (field of view)
     Point3       lookFrom        = Point3( 0, 0, 0 );

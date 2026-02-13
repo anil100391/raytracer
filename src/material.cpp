@@ -64,3 +64,20 @@ double Dielectric::reflectance( double cosine, double refractionIndex )
     r0 = r0 * r0;
     return r0 + (1 - r0) * std::pow( (1 - cosine), 5 );
 }
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+Color DiffuseLight::Emitted( double u, double v, const Point3 &p ) const
+{
+    return _tex->Value( u, v, p );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+bool DiffuseLight::Scatter( const Ray &r,
+                            const HitRecord &rec,
+                            Color &attenuation,
+                            Ray &scattered ) const
+{
+    return false;
+}
