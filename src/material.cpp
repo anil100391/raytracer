@@ -81,3 +81,15 @@ bool DiffuseLight::Scatter( const Ray &r,
 {
     return false;
 }
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+bool Isotropic::Scatter( const Ray &r,
+                         const HitRecord &rec,
+                         Color &attenuation,
+                         Ray &scattered ) const
+{
+    scattered = Ray( rec.p, RandomUnitVector(), r.time() );
+    attenuation = _tex->Value( rec.u, rec.v, rec.p );
+    return true;
+}

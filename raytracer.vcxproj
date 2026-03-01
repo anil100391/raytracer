@@ -139,6 +139,7 @@
     <ClInclude Include="include\bvh.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\color.h" />
+    <ClInclude Include="include\constantMedium.h" />
     <ClInclude Include="include\hittable.h" />
     <ClInclude Include="include\hittableList.h" />
     <ClInclude Include="include\interval.h" />
@@ -157,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="src\aabb.cpp" />
     <ClCompile Include="src\bvh.cpp" />
+    <ClCompile Include="src\constantMedium.cpp" />
     <ClCompile Include="src\hittable.cpp" />
     <ClCompile Include="src\perlin.cpp" />
     <ClCompile Include="src\ppmio.cpp" />

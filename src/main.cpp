@@ -13,6 +13,7 @@
 #include <texture.h>
 #include <material.h>
 #include <hittableList.h>
+#include <constantMedium.h>
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -312,14 +313,63 @@ static void CornellBox()
 
     std::vector<uint8_t> image;
     camera.Render( HittableList( world ), image );
-    rtPPMio::WritePPM( "EmptyCornellBox.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    rtPPMio::WritePPM( "CornellBox.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static void CornellSmoke()
+{
+    HittableList world;
+
+    auto red   = std::make_shared<Lambertian>( Color( .65, .05, .05 ) );
+    auto white = std::make_shared<Lambertian>( Color( .73, .73, .73 ) );
+    auto green = std::make_shared<Lambertian>( Color( .12, .45, .15 ) );
+    auto light = std::make_shared<DiffuseLight>( Color( 7, 7, 7 ) );
+
+    world.Add( std::make_shared<Quad>( Point3( 555, 0, 0 ), Vec3( 0, 555, 0 ), Vec3( 0, 0, 555 ), green ) );
+    world.Add( std::make_shared<Quad>( Point3( 0, 0, 0 ), Vec3( 0, 555, 0 ), Vec3( 0, 0, 555 ), red ) );
+    world.Add( std::make_shared<Quad>( Point3( 113, 554, 127 ), Vec3( 330, 0, 0 ), Vec3( 0, 0, 305 ), light ) );
+    world.Add( std::make_shared<Quad>( Point3( 0, 555, 0 ), Vec3( 555, 0, 0 ), Vec3( 0, 0, 555 ), white ) );
+    world.Add( std::make_shared<Quad>( Point3( 0, 0, 0 ), Vec3( 555, 0, 0 ), Vec3( 0, 0, 555 ), white ) );
+    world.Add( std::make_shared<Quad>( Point3( 0, 0, 555 ), Vec3( 555, 0, 0 ), Vec3( 0, 555, 0 ), white ) );
+
+    std::shared_ptr<Hittable> box1 = Box( Point3( 0, 0, 0 ), Point3( 165, 330, 165 ), white );
+    box1 = std::make_shared<Rotate_Y>( box1, 15 );
+    box1 = std::make_shared<Translate>( box1, Vec3( 265, 0, 295 ) );
+
+    std::shared_ptr<Hittable> box2 = Box( Point3( 0, 0, 0 ), Point3( 165, 165, 165 ), white );
+    box2 = std::make_shared<Rotate_Y>( box2, -18 );
+    box2 = std::make_shared<Translate>( box2, Vec3( 130, 0, 65 ) );
+
+    world.Add( std::make_shared<ConstantMedium>( box1, 0.01, Color( 0, 0, 0 ) ) );
+    world.Add( std::make_shared<ConstantMedium>( box2, 0.01, Color( 1, 1, 1 ) ) );
+
+    Camera camera;
+
+    camera.aspectRatio     = 1.0;
+    camera.imageWidth      = 600;
+    camera.samplesPerPixel = 200;
+    camera.maxDepth        = 50;
+    camera.backGround      = Color( 0, 0, 0 );
+
+    camera.vfov            = 40;
+    camera.lookFrom        = Point3( 278, 278, -800 );
+    camera.lookAt          = Point3( 278, 278, 0 );
+    camera.vup             = Vec3( 0, 1, 0 );
+
+    camera.defocusAngle    = 0;
+
+    std::vector<uint8_t> image;
+    camera.Render( HittableList( world ), image );
+    rtPPMio::WritePPM( "CornellSmoke.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 int main( int argc, const char *argv[] )
 {
-    switch ( 13 )
+    switch ( 14 )
     {
         case 0:
             MaterialTest();
@@ -341,6 +391,9 @@ int main( int argc, const char *argv[] )
             break;
         case 13:
             CornellBox();
+            break;
+        case 14:
+            CornellSmoke();
             break;
         default:
             break;
