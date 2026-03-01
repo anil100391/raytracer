@@ -367,9 +367,91 @@ static void CornellSmoke()
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static void FinalSceneBook2( int imageWidth, int samplesPerPixel, int maxDepth )
+{
+    HittableList boxes1;
+    auto ground = std::make_shared<Lambertian>( Color( 0.48, 0.83, 0.53 ) );
+
+    int boxesPerSide = 20;
+    for ( int i = 0; i < boxesPerSide; i++ )
+    {
+        for ( int j = 0; j < boxesPerSide; j++ )
+        {
+            auto w = 100.0;
+            auto x0 = -1000.0 + i * w;
+            auto z0 = -1000.0 + j * w;
+            auto y0 = 0.0;
+            auto x1 = x0 + w;
+            auto y1 = RandomDouble( 1, 101 );
+            auto z1 = z0 + w;
+
+            boxes1.Add( Box( Point3( x0, y0, z0 ), Point3( x1, y1, z1 ), ground ) );
+        }
+    }
+
+    HittableList world;
+
+    world.Add( std::make_shared<BVHNode>( boxes1 ) );
+
+    auto light = std::make_shared<DiffuseLight>( Color( 7, 7, 7 ) );
+    world.Add( std::make_shared<Quad>( Point3( 123, 554, 147 ), Vec3( 300, 0, 0 ), Vec3( 0, 0, 265 ), light ) );
+
+    auto center1 = Point3( 400, 400, 200 );
+    auto center2 = center1 + Vec3( 30, 0, 0 );
+    auto Sphere_material = std::make_shared<Lambertian>( Color( 0.7, 0.3, 0.1 ) );
+    world.Add( std::make_shared<Sphere>( center1, center2, 50, Sphere_material ) );
+
+    world.Add( std::make_shared<Sphere>( Point3( 260, 150, 45 ), 50, std::make_shared<Dielectric>( 1.5 ) ) );
+    world.Add( std::make_shared<Sphere>(
+        Point3( 0, 150, 145 ), 50, std::make_shared<Metal>( Color( 0.8, 0.8, 0.9 ), 1.0 )
+    ) );
+
+    auto boundary = std::make_shared<Sphere>( Point3( 360, 150, 145 ), 70, std::make_shared<Dielectric>( 1.5 ) );
+    world.Add( boundary );
+    world.Add( std::make_shared<ConstantMedium>( boundary, 0.2, Color( 0.2, 0.4, 0.9 ) ) );
+    boundary = std::make_shared<Sphere>( Point3( 0, 0, 0 ), 5000, std::make_shared<Dielectric>( 1.5 ) );
+    world.Add( std::make_shared<ConstantMedium>( boundary, .0001, Color( 1, 1, 1 ) ) );
+
+    auto emat = std::make_shared<Lambertian>( std::make_shared<ImageTexture>( "images/earthmap.jpg" ) );
+    world.Add( std::make_shared<Sphere>( Point3( 400, 200, 400 ), 100, emat ) );
+    auto pertext = std::make_shared<NoiseTexture>( 0.2 );
+    world.Add( std::make_shared<Sphere>( Point3( 220, 280, 300 ), 80, std::make_shared<Lambertian>( pertext ) ) );
+
+    HittableList boxes2;
+    auto white = std::make_shared<Lambertian>( Color( .73, .73, .73 ) );
+    int ns = 1000;
+    for ( int j = 0; j < ns; j++ )
+    {
+        boxes2.Add( std::make_shared<Sphere>( Point3::Random( 0, 165 ), 10, white ) );
+    }
+
+    world.Add( std::make_shared<Translate>( std::make_shared<Rotate_Y>( std::make_shared<BVHNode>( boxes2 ), 15 ), Vec3( -100, 270, 395 ) ) );
+
+    Camera camera;
+
+    camera.aspectRatio     = 1.0;
+    camera.imageWidth      = imageWidth;
+    camera.samplesPerPixel = samplesPerPixel;
+    camera.maxDepth        = maxDepth;
+    camera.backGround      = Color( 0, 0, 0 );
+
+    camera.vfov            = 40;
+    camera.lookFrom        = Point3( 478, 278, -600 );
+    camera.lookAt          = Point3( 278, 278, 0 );
+    camera.vup             = Vec3( 0, 1, 0 );
+
+    camera.defocusAngle = 0;
+
+    std::vector<uint8_t> image;
+    camera.Render( HittableList( world ), image );
+    rtPPMio::WritePPM( "FinalSceneBook2.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 int main( int argc, const char *argv[] )
 {
-    switch ( 14 )
+    switch ( 15 )
     {
         case 0:
             MaterialTest();
@@ -395,7 +477,11 @@ int main( int argc, const char *argv[] )
         case 14:
             CornellSmoke();
             break;
+        case 15:
+            FinalSceneBook2( 400, 250, 4 );
+            break;
         default:
+            FinalSceneBook2( 800, 10000, 40 );
             break;
     }
 
