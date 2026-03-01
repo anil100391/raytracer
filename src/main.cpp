@@ -285,10 +285,20 @@ static void CornellBox()
     world.Add( std::make_shared<Quad>( Point3( 555, 555, 555 ), Vec3( -555, 0, 0 ), Vec3( 0, 0, -555 ), white ) );
     world.Add( std::make_shared<Quad>( Point3( 0, 0, 555 ), Vec3( 555, 0, 0 ), Vec3( 0, 555, 0 ), white ) );
 
+    std::shared_ptr<Hittable> box1 = Box( Point3( 0, 0, 0 ), Point3( 165, 330, 165 ), white );
+    box1 = std::make_shared<Rotate_Y>( box1, 15 );
+    box1 = std::make_shared<Translate>( box1, Vec3( 265, 0, 295 ) );
+    world.Add( box1 );
+
+    std::shared_ptr<Hittable> box2 = Box( Point3( 0, 0, 0 ), Point3( 165, 165, 165 ), white );
+    box2 = std::make_shared<Rotate_Y>( box2, -18 );
+    box2 = std::make_shared<Translate>( box2, Vec3( 130, 0, 65 ) );
+    world.Add( box2 );
+
     Camera camera;
 
     camera.aspectRatio     = 1.0;
-    camera.imageWidth      = 600;
+    camera.imageWidth      = 300;
     camera.samplesPerPixel = 200;
     camera.maxDepth        = 50;
     camera.backGround      = Color( 0, 0, 0 );

@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="src\aabb.cpp" />
     <ClCompile Include="src\bvh.cpp" />
+    <ClCompile Include="src\hittable.cpp" />
     <ClCompile Include="src\perlin.cpp" />
     <ClCompile Include="src\ppmio.cpp" />
     <ClCompile Include="src\camera.cpp" />

@@ -49,6 +49,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\quad.cpp" />
+    <ClCompile Include="include\hittable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rtDefs.h">

@@ -41,3 +41,41 @@ public:
 
     virtual AABB BoundingBox() const = 0;
 };
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+class Translate : public Hittable
+{
+public:
+
+    Translate( std::shared_ptr<Hittable> object, const Vec3 &offset );
+
+    virtual bool Hit( const Ray &r, const Interval &RayT, HitRecord &rec ) const override;
+
+    virtual AABB BoundingBox() const override { return _bbox; }
+private:
+
+    std::shared_ptr<Hittable> _object;
+    Vec3                      _offset;
+    AABB                      _bbox;
+};
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+class Rotate_Y :public Hittable
+{
+public:
+
+    Rotate_Y( std::shared_ptr<Hittable> object, double angle );
+
+    virtual bool Hit( const Ray &r, const Interval &RayT, HitRecord &rec ) const override;
+
+    virtual AABB BoundingBox() const override { return _bbox; }
+
+private:
+
+    std::shared_ptr<Hittable> _object;
+    double                    _sin_theta = 0;
+    double                    _cos_theta = 1;
+    AABB                      _bbox;
+};
