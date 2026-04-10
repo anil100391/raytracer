@@ -13,20 +13,24 @@ public:
     rtImage( const std::filesystem::path &imageFile );
     ~rtImage();
 
+    void Resize(int width, int height, bool zeroInit = true);
     bool Load( const std::string &fileName );
+
     int  Width() const;
     int  Height() const;
+    bool Save( const std::string &fileName ) const;
 
+    unsigned char* PixelData();
+    const unsigned char* PixelData() const;
     const unsigned char* PixelData( int x, int y ) const;
 
 private:
 
     static int           Clamp( int x, int low, int high );
     static unsigned char FloatToByte( float value );
-    void                 ConvertToBytes();
+    void                 ConvertToBytes(float *fdata);
 
     const int      _bytesPerPixel   = 3;
-    float         *_fdata           = nullptr;
     unsigned char *_bdata           = nullptr;
     int            _imageWidth      = 0;
     int           _imageHeight      = 0;
@@ -37,14 +41,28 @@ private:
 // -----------------------------------------------------------------------------
 inline int rtImage::Width() const
 {
-    return _fdata ? _imageWidth : 0;
+    return _imageWidth;
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 inline int rtImage::Height() const
 {
-    return _fdata ? _imageHeight : 0;
+    return _imageHeight;
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+inline unsigned char* rtImage::PixelData()
+{
+    return _bdata;
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+inline const unsigned char* rtImage::PixelData() const
+{
+    return _bdata;
 }
 
 // -----------------------------------------------------------------------------

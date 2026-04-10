@@ -1,7 +1,3 @@
-#include <vector>
-#include <iostream>
-
-#include <ppmio.h>
 #include <vec3.h>
 #include <ray.h>
 #include <bvh.h>
@@ -95,9 +91,9 @@ static void BookCoverImage( bool renderBouncingSpheres )
     camera.defocusAngle    = 0.6;
     camera.focusDist       = 10.0;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render(world, image);
-    rtPPMio::WritePPM( "BookCover.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save( "BookCover.png" );
 }
 
 // -----------------------------------------------------------------------------
@@ -132,9 +128,9 @@ static void MaterialTest()
     camera.defocusAngle    = 10.0;
     camera.focusDist       = 3.4;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render(world, image);
-    rtPPMio::WritePPM( "test.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save("test.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -159,9 +155,9 @@ static void Earth()
 
     camera.defocusAngle    = 0.0;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render( HittableList( globe ), image );
-    rtPPMio::WritePPM( "earth.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save("earth.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -188,9 +184,9 @@ static void PerlinSpheres()
 
     camera.defocusAngle    = 0.0;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render( HittableList( world ), image );
-    rtPPMio::WritePPM( "perlin.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save("perlin.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -228,9 +224,9 @@ static void Quads()
 
     camera.defocusAngle = 0;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render( HittableList( world ), image );
-    rtPPMio::WritePPM( "quads.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save("quads.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -263,9 +259,9 @@ static void SimpleLight()
 
     camera.defocusAngle = 0;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render( HittableList( world ), image );
-    rtPPMio::WritePPM( "light.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save("light.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -311,9 +307,9 @@ static void CornellBox()
 
     camera.defocusAngle = 0;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render( HittableList( world ), image );
-    rtPPMio::WritePPM( "CornellBox.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save("CornellBox.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -360,9 +356,9 @@ static void CornellSmoke()
 
     camera.defocusAngle    = 0;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render( HittableList( world ), image );
-    rtPPMio::WritePPM( "CornellSmoke.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save("CornellSmoke.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -442,9 +438,9 @@ static void FinalSceneBook2( int imageWidth, int samplesPerPixel, int maxDepth )
 
     camera.defocusAngle = 0;
 
-    std::vector<uint8_t> image;
+    rtImage image;
     camera.Render( HittableList( world ), image );
-    rtPPMio::WritePPM( "FinalSceneBook2.ppm", camera.ImageWidth(), camera.ImageHeight(), image.data() );
+    image.Save("FinalSceneBook2.png");
 }
 
 // -----------------------------------------------------------------------------

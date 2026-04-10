@@ -2,17 +2,18 @@
 #include <format>
 #include <camera.h>
 #include <material.h>
+#include <rtSTBImage.h>
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Camera::Render( const Hittable &world, std::vector<uint8_t> &image )
+void Camera::Render( const Hittable &world, rtImage &image )
 {
     auto begin = clock();
 
     Initialize();
 
-    image.clear();
-    image.reserve( imageWidth * imageHeight * 3u );
+    image.Resize(imageWidth, imageHeight);
+    unsigned char* data = image.PixelData();
     for ( auto ii = 0u; ii < imageHeight; ++ii )
     {
         std::clog << "\rScalines remaining: " << imageHeight - ii << " " << std::flush;
@@ -32,13 +33,11 @@ void Camera::Render( const Hittable &world, std::vector<uint8_t> &image )
             auto b = LinearToGamma( pixelColor.z() );
 
             static const Interval intensity( 0.0, 0.999 );
-            auto ir = uint8_t( 256 * intensity.Clamp( r ) );
-            auto ig = uint8_t( 256 * intensity.Clamp( g ) );
-            auto ib = uint8_t( 256 * intensity.Clamp( b ) );
+            data[0] = uint8_t( 256 * intensity.Clamp( r ) );
+            data[1] = uint8_t( 256 * intensity.Clamp( g ) );
+            data[2] = uint8_t( 256 * intensity.Clamp( b ) );
 
-            image.push_back( ir );
-            image.push_back( ig );
-            image.push_back( ib );
+            data += 3u;
         }
     }
 

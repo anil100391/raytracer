@@ -1,8 +1,11 @@
 #pragma once
 
-#include <vector>
 #include <color.h>
 #include <hittable.h>
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+class rtImage;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -27,7 +30,7 @@ public:
     [[nodiscard]] unsigned int ImageWidth() const noexcept { return imageWidth; }
     [[nodiscard]] unsigned int ImageHeight() const noexcept { return imageHeight; }
 
-    void Render( const Hittable &world, std::vector<uint8_t> &image );
+    void Render( const Hittable &world, rtImage &image );
 
 private:
 

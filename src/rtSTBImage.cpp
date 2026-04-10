@@ -1,4 +1,3 @@
-#include <format>
 #include <iostream>
 #include <rtSTBImage.h>
 
@@ -7,18 +6,18 @@
 
 #include <stb_image/stb_image.h>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image/stb_image_write.h>
+
+#include <filesystem>
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 rtImage::rtImage( const std::filesystem::path &imageFile )
 {
-    // Loads image data from the specified file. If the RTW_IMAGES environment
-    // variable is defined, looks only in that directory for the image file. If
-    // the image was not found, searches for the specified image file first
-    // from the current directory, then in the images/ subdirectory, then the
-    // _parent's_ images/ subdirectory, and then _that_ parent, on so on, for
-    // six levels up. If the image was not loaded successfully, width() and
-    // height() will return 0.
-    if ( !Load( imageFile.string() ) )
+    // Loads image data from the specified file.If the image was not loaded
+    // successfully, width() and height() will return 0.
+    if (!Load(imageFile.string()))
     {
         std::cerr << "ERROR: Could not load image file '" << imageFile << "'.\n";
     }
@@ -29,7 +28,35 @@ rtImage::rtImage( const std::filesystem::path &imageFile )
 rtImage::~rtImage()
 {
     delete[] _bdata;
-    STBI_FREE( _fdata );
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+void rtImage::Resize(int width, int height, bool zeroInit)
+{
+    if (_bdata)
+    {
+        if ( width * height > _imageWidth * _imageHeight )
+        {
+            delete[] _bdata;
+            _bdata = nullptr;
+        }
+    }
+
+    _imageWidth  = width;
+    _imageHeight = height;
+    _bytesPerScanline = _bytesPerPixel * _imageWidth;
+
+    if ( !_bdata )
+    {
+        auto totalBytes = _imageWidth * _imageHeight * _bytesPerPixel;
+        _bdata = new unsigned char[totalBytes];
+    }
+
+    if ( zeroInit )
+    {
+        memset(_bdata, 0, _imageWidth * _imageHeight * _bytesPerPixel);
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -44,15 +71,38 @@ bool rtImage::Load( const std::string &fileName )
     // image.
 
     auto n = _bytesPerPixel; // Dummy out parameter: original components per pixel
-    _fdata = stbi_loadf( fileName.c_str(), &_imageWidth, &_imageHeight, &n, _bytesPerPixel );
-    if ( !_fdata )
+    auto fdata = stbi_loadf( fileName.c_str(), &_imageWidth, &_imageHeight, &n, _bytesPerPixel );
+    if ( !fdata )
     {
+        _imageWidth = 0;
+        _imageHeight = 0;
         return false;
     }
 
     _bytesPerScanline = _imageWidth * _bytesPerPixel;
-    ConvertToBytes();
+    ConvertToBytes(fdata);
+    STBI_FREE(fdata);
+
     return true;
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+bool rtImage::Save( const std::string &fileName ) const
+{
+    std::filesystem::path path(fileName.c_str());
+
+    if ( path.extension() == ".png" )
+    {
+        return ( 0 != stbi_write_png( fileName.c_str(),
+                                      Width(),
+                                      Height(),
+                                      _bytesPerPixel,
+                                      _bdata,
+                                      _bytesPerScanline ) );
+    }
+
+    return false;
 }
 
 // -----------------------------------------------------------------------------
@@ -64,6 +114,7 @@ const unsigned char *rtImage::PixelData( int x, int y ) const
     static unsigned char magenta[] = { 255, 0, 255 };
     if ( !_bdata )
     {
+        assert(false);
         return magenta;
     }
 
@@ -92,7 +143,7 @@ unsigned char rtImage::FloatToByte( float value )
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void rtImage::ConvertToBytes()
+void rtImage::ConvertToBytes(float *fdata)
 {
     // Convert the linear floating point pixel data to bytes, storing the
     // resulting byte data in the `bdata` member.
@@ -102,7 +153,7 @@ void rtImage::ConvertToBytes()
     // Iterate through all pixel components, converting from [0.0, 1.0] float
     // values to unsigned [0, 255] byte values.
     auto *bptr = _bdata;
-    auto *fptr = _fdata;
+    auto *fptr = fdata;
     for ( auto i = 0; i < totalBytes; i++, fptr++, bptr++ )
     {
         *bptr = FloatToByte( *fptr );
