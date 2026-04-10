@@ -1,3 +1,4 @@
+#include <ppmio.h>
 #include <iostream>
 #include <rtSTBImage.h>
 
@@ -92,7 +93,8 @@ bool rtImage::Save( const std::string &fileName ) const
 {
     std::filesystem::path path(fileName.c_str());
 
-    if ( path.extension() == ".png" )
+    auto ext = path.extension();
+    if ( ext == ".png" )
     {
         return ( 0 != stbi_write_png( fileName.c_str(),
                                       Width(),
@@ -100,6 +102,11 @@ bool rtImage::Save( const std::string &fileName ) const
                                       _bytesPerPixel,
                                       _bdata,
                                       _bytesPerScanline ) );
+    }
+
+    if ( ext == ".ppm" )
+    {
+        return rtPPMio::WritePPM(fileName, *this);
     }
 
     return false;
