@@ -93,7 +93,7 @@ static void BookCoverImage( bool renderBouncingSpheres )
 
     rtImage image;
     camera.Render(world, image);
-    image.Save( "BookCover.png" );
+    image.Save( "renders/BookCover.png" );
 }
 
 // -----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ static void MaterialTest()
 
     rtImage image;
     camera.Render(world, image);
-    image.Save("test.png");
+    image.Save("renders/test.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -157,7 +157,7 @@ static void Earth()
 
     rtImage image;
     camera.Render( HittableList( globe ), image );
-    image.Save("earth.png");
+    image.Save("renders/earth.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -186,7 +186,7 @@ static void PerlinSpheres()
 
     rtImage image;
     camera.Render( HittableList( world ), image );
-    image.Save("perlin.png");
+    image.Save("renders/perlin.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -226,7 +226,7 @@ static void Quads()
 
     rtImage image;
     camera.Render( HittableList( world ), image );
-    image.Save("quads.png");
+    image.Save("renders/quads.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -261,7 +261,7 @@ static void SimpleLight()
 
     rtImage image;
     camera.Render( HittableList( world ), image );
-    image.Save("light.png");
+    image.Save("renders/light.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -309,7 +309,7 @@ static void CornellBox()
 
     rtImage image;
     camera.Render( HittableList( world ), image );
-    image.Save("CornellBox.png");
+    image.Save("renders/CornellBox.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -358,7 +358,7 @@ static void CornellSmoke()
 
     rtImage image;
     camera.Render( HittableList( world ), image );
-    image.Save("CornellSmoke.png");
+    image.Save("renders/CornellSmoke.png");
 }
 
 // -----------------------------------------------------------------------------
@@ -440,20 +440,20 @@ static void FinalSceneBook2( int imageWidth, int samplesPerPixel, int maxDepth )
 
     rtImage image;
     camera.Render( HittableList( world ), image );
-    image.Save("FinalSceneBook2.png");
+    image.Save("renders/FinalSceneBook2.png");
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 int main( int argc, const char *argv[] )
 {
-    switch ( 15 )
+    switch ( 1 )
     {
         case 0:
             MaterialTest();
             break;
         case 1:
-            BookCoverImage( true );
+            BookCoverImage( false );
             break;
         case 3:
             Earth();
