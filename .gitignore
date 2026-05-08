@@ -1,9 +1,5 @@
 .vs
+*.json
 out
 build
-vsbuild
 renders
-*.ppm
-*.png
-*.jpg
-*.vcxproj.user
