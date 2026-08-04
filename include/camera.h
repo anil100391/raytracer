@@ -1,6 +1,8 @@
 #pragma once
 
+#include <atomic>
 #include <color.h>
+#include <cstdlib>
 #include <hittable.h>
 
 // -----------------------------------------------------------------------------
@@ -31,6 +33,8 @@ public:
     [[nodiscard]] unsigned int ImageHeight() const noexcept { return imageHeight; }
 
     void Render( const Hittable &world, rtImage &image );
+    void Reset();
+    void AbortRender() { abortRender = true; }
 
 private:
 
@@ -50,4 +54,6 @@ private:
     Vec3         u, v, w;                   // camera basis vectors
     Vec3         defocusDiskU;
     Vec3         defocusDiskV;
+
+    std::atomic_bool abortRender{false};
 };

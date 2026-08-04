@@ -1,47 +1,91 @@
-#include <ctime>
 #include <format>
 #include <camera.h>
 #include <material.h>
 #include <rtSTBImage.h>
+#include <thread>
+#include <functional>
+
+#include <tinygraphics/log.h>
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+void Camera::Reset()
+{
+    aspectRatio       = 1.0;
+    imageWidth        = 100u;
+    samplesPerPixel   = 10u;
+    maxDepth          = 10u;
+    vfov              = 90; // Vertical view angle (field of view)
+    lookFrom          = Point3( 0, 0, 0 );
+    lookAt            = Point3( 0, 0, -1 );
+    vup               = Point3( 0, 1, 0 );
+    defocusAngle      = 0.0;
+    focusDist         = 10.0;
+    imageHeight       = 100u;
+    pixelSamplesScale = 1.0;
+    abortRender       = false;
+}
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void Camera::Render( const Hittable &world, rtImage &image )
 {
-    auto begin = clock();
-
     Initialize();
 
-    image.Resize(imageWidth, imageHeight);
-    unsigned char* data = image.PixelData();
-    for ( auto ii = 0u; ii < imageHeight; ++ii )
+    image.Resize( imageWidth, imageHeight );
+
+    auto job = [&]( auto begin, auto end )
     {
-        std::clog << "\rScalines remaining: " << imageHeight - ii << " " << std::flush;
-        for ( auto jj = 0u; jj < imageWidth; ++jj )
+        for ( auto ii = begin; ii < end; ++ii )
         {
-            Color pixelColor( 0, 0, 0 );
-            for ( auto sample = 0u; sample < samplesPerPixel; ++sample )
+            if ( abortRender )
+                return;
+            unsigned char *data = image.PixelData();
+            data += ( imageWidth * 3 ) * ii;
+            for ( auto jj = 0u; jj < imageWidth; ++jj )
             {
-                Ray r = GetRay( jj, ii );
-                pixelColor += RayColor( r, maxDepth, world );
+                if ( abortRender )
+                    return;
+                Color pixelColor( 0, 0, 0 );
+                for ( auto sample = 0u; sample < samplesPerPixel; ++sample )
+                {
+                    Ray r = GetRay( jj, ii );
+                    pixelColor += RayColor( r, maxDepth, world );
+                }
+
+                pixelColor *= pixelSamplesScale;
+
+                auto r = LinearToGamma( pixelColor.x() );
+                auto g = LinearToGamma( pixelColor.y() );
+                auto b = LinearToGamma( pixelColor.z() );
+
+                static const Interval intensity( 0.0, 0.999 );
+                data[0] = uint8_t( 256 * intensity.Clamp( r ) );
+                data[1] = uint8_t( 256 * intensity.Clamp( g ) );
+                data[2] = uint8_t( 256 * intensity.Clamp( b ) );
+
+                data += 3u;
             }
-
-            pixelColor *= pixelSamplesScale;
-
-            auto r = LinearToGamma( pixelColor.x() );
-            auto g = LinearToGamma( pixelColor.y() );
-            auto b = LinearToGamma( pixelColor.z() );
-
-            static const Interval intensity( 0.0, 0.999 );
-            data[0] = uint8_t( 256 * intensity.Clamp( r ) );
-            data[1] = uint8_t( 256 * intensity.Clamp( g ) );
-            data[2] = uint8_t( 256 * intensity.Clamp( b ) );
-
-            data += 3u;
         }
+    };
+
+    auto                     numThreads = std::thread::hardware_concurrency();
+    auto                     rowsPerThread = imageHeight / numThreads;
+    std::vector<std::thread> workers;
+    for ( auto ii = 0; ii < numThreads; ++ii )
+    {
+        auto begin = ii * rowsPerThread;
+        auto end   = ( ii + 1 ) * rowsPerThread;
+        if ( ii == numThreads - 1 )
+        {
+            end = imageHeight;
+        }
+        workers.emplace_back( job, begin, end );
     }
 
-    std::cout << std::format( "Rendered in {}s\n", (1.0 * (clock() - begin)) / CLOCKS_PER_SEC );
+    std::for_each(
+        workers.begin(), workers.end(), std::mem_fn( &std::thread::join ) );
+    Log( LogLevel::Info, "Rendering finished" );
 }
 
 // -----------------------------------------------------------------------------
@@ -52,17 +96,17 @@ void Camera::Initialize()
     // Camera is at origin, camera up is along Y, camera is facing along -Z and
     // camera right is along X
     // Viewport (image pixel grid is 1 unit away from camera
-    imageHeight = static_cast<unsigned int>(imageWidth / aspectRatio);
+    imageHeight = static_cast<unsigned int>( imageWidth / aspectRatio );
     imageHeight = imageHeight < 1 ? 1u : imageHeight;
 
     pixelSamplesScale = 1.0 / samplesPerPixel;
 
-    center              = lookFrom;
+    center = lookFrom;
 
-    auto theta          = DegreesToRadians(vfov);
+    auto theta          = DegreesToRadians( vfov );
     auto h              = std::tan( theta / 2 );
     auto viewportHeight = 2 * h * focusDist;
-    auto viewportWidth  = viewportHeight * ((double)imageWidth / imageHeight);
+    auto viewportWidth  = viewportHeight * ( (double)imageWidth / imageHeight );
 
     // basis vectors
     w = Normalize( lookFrom - lookAt );
@@ -75,12 +119,14 @@ void Camera::Initialize()
     pixelDeltaU = viewportU / imageWidth;
     pixelDeltaV = viewportV / imageHeight;
 
-    auto viewportUpperLeft = center - (focusDist * w) - viewportU / 2 - viewportV / 2;
-    pixel00Loc             = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
+    auto viewportUpperLeft =
+        center - ( focusDist * w ) - viewportU / 2 - viewportV / 2;
+    pixel00Loc = viewportUpperLeft + 0.5 * ( pixelDeltaU + pixelDeltaV );
 
-    auto defocusRadius     = focusDist * std::tan( DegreesToRadians( defocusAngle / 2 ) );
-    defocusDiskU           = u * defocusRadius;
-    defocusDiskU           = v * defocusRadius;
+    auto defocusRadius =
+        focusDist * std::tan( DegreesToRadians( defocusAngle / 2 ) );
+    defocusDiskU = u * defocusRadius;
+    defocusDiskU = v * defocusRadius;
 }
 
 // -----------------------------------------------------------------------------
@@ -88,7 +134,7 @@ void Camera::Initialize()
 Point3 Camera::DefocusDiskSample() const noexcept
 {
     auto p = RandomInUnitDisk();
-    return center + (p[0] * defocusDiskU) + (p[1] * defocusDiskV);
+    return center + ( p[0] * defocusDiskU ) + ( p[1] * defocusDiskV );
 }
 
 // -----------------------------------------------------------------------------
@@ -102,10 +148,10 @@ Vec3 Camera::SampleSquare() const noexcept
 // -----------------------------------------------------------------------------
 Ray Camera::GetRay( unsigned int col, unsigned int row ) const noexcept
 {
-    auto offset = SampleSquare();
-    auto pixelSample = pixel00Loc + ((col + offset.x()) * pixelDeltaU)
-                                  + ((row + offset.y()) * pixelDeltaV);
-    auto rayOrigin    = (defocusAngle <= 0) ? center : DefocusDiskSample();
+    auto offset       = SampleSquare();
+    auto pixelSample  = pixel00Loc + ( ( col + offset.x() ) * pixelDeltaU ) +
+                        ( ( row + offset.y() ) * pixelDeltaV );
+    auto rayOrigin    = ( defocusAngle <= 0 ) ? center : DefocusDiskSample();
     auto rayDirection = pixelSample - rayOrigin;
     auto rayTime      = RandomDouble();
     return Ray( rayOrigin, rayDirection, rayTime );
@@ -113,8 +159,8 @@ Ray Camera::GetRay( unsigned int col, unsigned int row ) const noexcept
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-Color Camera::RayColor( const Ray &r,
-                        int depth,
+Color Camera::RayColor( const Ray      &r,
+                        int             depth,
                         const Hittable &world ) const noexcept
 {
     if ( depth <= 0 )
@@ -126,13 +172,14 @@ Color Camera::RayColor( const Ray &r,
         return backGround;
     }
 
-    Ray scattered;
+    Ray   scattered;
     Color attenuation;
     Color colorFromEmission = rec.mat->Emitted( rec.u, rec.v, rec.p );
 
     if ( !rec.mat->Scatter( r, rec, attenuation, scattered ) )
         return colorFromEmission;
 
-    Color colorFromScatter = attenuation * RayColor( scattered, depth - 1, world );
+    Color colorFromScatter =
+        attenuation * RayColor( scattered, depth - 1, world );
     return colorFromEmission + colorFromScatter;
 }

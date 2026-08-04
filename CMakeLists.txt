@@ -5,6 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+include(FetchContent)
+FetchContent_Declare(
+        tinygraphics
+        GIT_REPOSITORY https://github.com/anil100391/tinygraphics.git
+        GIT_TAG main)
+FetchContent_MakeAvailable(tinygraphics)
+
 set(SOURCES
         "src/camera.cpp"
         "src/interval.cpp"
@@ -43,6 +50,7 @@ set(HEADERS
 
 add_executable(raytracer ${SOURCES} ${HEADERS})
 target_include_directories(raytracer PRIVATE include third_party)
+target_link_libraries(raytracer PRIVATE tinygraphics)
 
 #set_target_properties(raytracer PROPERTIES FOLDER "unity/core/modules/freedom/representations")
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
